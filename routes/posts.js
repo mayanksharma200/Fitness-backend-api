@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 });
 
 // Add this before other routes
-app.get('/test', (req, res) => {
+router.get('/test', (req, res) => {
   res.json({ message: "API is working!" });
 });
 
