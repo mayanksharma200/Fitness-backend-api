@@ -2,13 +2,22 @@ import mongoose from "mongoose";
 
 const summaryItemSchema = new mongoose.Schema({
   title: String,
-  position: String,
   text: String,
+});
+
+const bodyItemSchema = new mongoose.Schema({
+  headline: String,
+  content: String,
 });
 
 const contentSchema = new mongoose.Schema({
   summary: [summaryItemSchema],
-  body: [String],
+  body: [bodyItemSchema],
+});
+
+const relatedStudySchema = new mongoose.Schema({
+  title: String,
+  link: String,
 });
 
 const metaSchema = new mongoose.Schema({
@@ -18,13 +27,13 @@ const metaSchema = new mongoose.Schema({
   readTime: String,
 });
 
-// models/Post.js
 const postSchema = new mongoose.Schema({
   title: String,
-  position: String,  // Add this at the root level
+  position: String,
   content: contentSchema,
   meta: metaSchema,
   image: String,
+  related_studies: [relatedStudySchema], // Added this field
 });
 
 const Post = mongoose.model("Post", postSchema);
