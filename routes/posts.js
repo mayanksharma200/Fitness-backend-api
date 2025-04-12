@@ -31,6 +31,15 @@ router.get("/top-articles", async (req, res) => {
   }
 });
 
+router.get("/top-nutrition", async (req, res) => {
+  try {
+    const topNutrition = await Post.find({ position: "NutritionTop" });
+    res.json(topNutrition);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get all posts
 router.get("/", async (req, res) => {
   try {
