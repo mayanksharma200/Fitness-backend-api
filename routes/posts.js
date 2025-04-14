@@ -31,23 +31,7 @@ router.get("/top-articles", async (req, res) => {
   }
 });
 
-router.get("/top-nutrition", async (req, res) => {
-  try {
-    const topNutrition = await Post.find({ position: "NutritionTop" });
-    res.json(topNutrition);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
-router.get("/mid-nutrition", async (req, res) => {
-  try {
-    const midNutrition = await Post.find({ position: "NutritionMid" });
-    res.json(midNutrition);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 router.get("/just-in", async (req, res) => {
   try {
     const justIn = await Post.find({ position: "JustIn" });
@@ -60,6 +44,112 @@ router.get("/more-top-reads", async (req, res) => {
   try {
     const moreTopReads = await Post.find({ position: "MoreTopReads" });
     res.json(moreTopReads);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+//categories
+router.get("/top-nutrition", async (req, res) => {
+  try {
+    const topNutrition = await Post.find({ position: "NutritionTop" });
+    res.json(topNutrition);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/mid-nutrition", async (req, res) => {
+  try {
+    const midNutrition = await Post.find({ position: "NutritionMid" });
+    res.json(midNutrition);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/sleep-top", async (req, res) => {
+  try {
+    const sleepTop = await Post.find({ position: "SleepTop" });
+    res.json(sleepTop);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/sleep-mid", async (req, res) => {
+  try {
+    const sleepMid = await Post.find({ position: "SleepMid" });
+    res.json(sleepMid);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/mental-top", async (req, res) => {
+  try {
+    const mentalTop = await Post.find({ position: "MentalTop" });
+    res.json(mentalTop);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/mental-mid", async (req, res) => {
+  try {
+    const mentalMid = await Post.find({ position: "MentalMid" });
+    res.json(mentalMid);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/fitness-top", async (req, res) => {
+  try {
+    const fitnessTop = await Post.find({ position: "FitnessTop" });
+    res.json(fitnessTop);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/fitness-mid", async (req, res) => {
+  try {
+    const fitnessMid = await Post.find({ position: "FitnessMid" });
+    res.json(fitnessMid);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/product-top", async (req, res) => {
+  try {
+    const productTop = await Post.find({ position: "ProductTop" });
+    res.json(productTop);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/product-mid", async (req, res) => {
+  try {
+    const productMid = await Post.find({ position: "ProductMid" });
+    res.json(productMid);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+//viewall top
+router.get("/viewall-top", async (req, res) => {
+  try {
+    const topPosts = await Post.find({
+      position: {
+        $in: [
+          "TopNutrition",
+          "SleepTop",
+          "MentalTop",
+          "FitnessTop",
+          "ProductTop",
+        ],
+      },
+    });
+    res.json(topPosts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
