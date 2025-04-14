@@ -13,7 +13,8 @@ connectDB();
 const staticAllowedOrigins = [
   "http://localhost:5173", // Local development
   "https://fitnessclub121.vercel.app", // Your Vercel frontend
-  "https://fitness-backend-api.vercel.app", // Your backend (if needed)
+  "https://fitness-backend-api.vercel.app",
+  "www.fitnesss.club", // Your backend (if needed)
 ];
 
 const envAllowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
