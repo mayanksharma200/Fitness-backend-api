@@ -40,6 +40,31 @@ router.get("/top-nutrition", async (req, res) => {
   }
 });
 
+router.get("/mid-nutrition", async (req, res) => {
+  try {
+    const midNutrition = await Post.find({ position: "NutritionMid" });
+    res.json(midNutrition);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/just-in", async (req, res) => {
+  try {
+    const justIn = await Post.find({ position: "JustIn" });
+    res.json(justIn);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/more-top-reads", async (req, res) => {
+  try {
+    const moreTopReads = await Post.find({ position: "MoreTopReads" });
+    res.json(moreTopReads);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get all posts
 router.get("/", async (req, res) => {
   try {
