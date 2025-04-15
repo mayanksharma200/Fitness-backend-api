@@ -12,10 +12,11 @@ connectDB();
 
 // CORS Configuration
 const staticAllowedOrigins = [
-  "http://localhost:5173", // Local development
-  "https://fitnessclub121.vercel.app", // Your Vercel frontend
+  "http://localhost:5173",
+  "https://fitnessclub121.vercel.app",
   "https://fitness-backend-api.vercel.app",
-  "https://www.fitnesss.club", // Your backend (if needed)
+  "https://www.fitnesss.club",
+  "https://fitnesss.club", // Add without www as well
 ];
 
 const envAllowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
