@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./utils/db.js";
 import postsRouter from "./routes/posts.js";
+import axios from "axios";
 
 const app = express();
 

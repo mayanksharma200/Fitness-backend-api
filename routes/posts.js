@@ -1,5 +1,6 @@
 import express from "express";
 import Post from "../models/Post.js";
+import axios from "axios";
 
 const router = express.Router();
 
@@ -202,5 +203,128 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;  // ⚠️ Only for testing! Remove later.
+const GEMINI_API_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+
+router.post("/generate-content", async (req, res) => {
+  try {
+    const { title, source, imageUrl, position, sections = 5 } = req.body;
+
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        error: "Title is required",
+      });
+    }
+
+    if (!GEMINI_API_KEY) {
+      return res.status(501).json({
+        success: false,
+        error: "AI service not configured",
+      });
+    }
+
+    const prompt = {
+      contents: [
+        {
+          parts: [
+            {
+              text: `As a health and wellness content writer, create a comprehensive, in-depth article with multiple sections based on these requirements:
+
+          ARTICLE TITLE: ${title}
+          ${source ? `SOURCE: ${source}` : ""}
+          ${imageUrl ? `IMAGE CONTEXT: ${imageUrl}` : ""}
+          ${
+            position
+              ? `CATEGORY: ${position
+                  .replace(/Top|Mid/g, "")
+                  .replace(/([A-Z])/g, " $1")
+                  .trim()}`
+              : ""
+          }
+          
+          CONTENT REQUIREMENTS:
+          - Generate 3 concise summary bullet points
+          - Create ${sections} detailed body sections with headlines and comprehensive content
+          - Each section should be approximately 1200 words (very detailed and thorough)
+          - Include 5-7 relevant keywords per section for hyperlinks
+          - Maintain professional yet accessible tone
+          - Ensure logical flow between sections
+          - Include subsections with H3 headings where appropriate
+          - Provide statistics, expert quotes, and practical examples where relevant
+          
+          OUTPUT FORMAT (as valid JSON):
+          {
+            "summary": [
+              {"title": "Key point", "text": "Brief summary text..."},
+              ...
+            ],
+            "body": [
+              {
+                "headline": "Section 1 Headline",
+                "content": "Very detailed content for this section (approximately 1200 words)...",
+                "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
+                "subsections": [
+                  {
+                    "subheading": "Subsection 1",
+                    "content": "Detailed content for this subsection..."
+                  },
+                  ...
+                ]
+              },
+              ...
+            ]
+          }`,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 8000, // Increased to allow for longer content
+      },
+    };
+
+    const response = await axios.post(
+      `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+      prompt,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const generatedText = response.data.candidates[0].content.parts[0].text;
+
+    try {
+      // Clean the response to ensure valid JSON
+      const jsonStart = generatedText.indexOf("{");
+      const jsonEnd = generatedText.lastIndexOf("}") + 1;
+      const jsonString = generatedText.slice(jsonStart, jsonEnd);
+
+      const generatedContent = JSON.parse(jsonString);
+
+      res.json({
+        success: true,
+        content: generatedContent,
+      });
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      res.json({
+        success: true,
+        rawContent: generatedText,
+      });
+    }
+  } catch (error) {
+    console.error("Content generation error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
 // module.exports = router;
 export default router;
