@@ -87,7 +87,7 @@ router.get("/sleep-mid", async (req, res) => {
 
 router.get("/mental-top", async (req, res) => {
   try {
-    const mentalTop = await Post.find({ position: "MentalTop" });
+    const mentalTop = await Post.find({ position: "MentalHealthTop" });
     res.json(mentalTop);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -95,7 +95,7 @@ router.get("/mental-top", async (req, res) => {
 });
 router.get("/mental-mid", async (req, res) => {
   try {
-    const mentalMid = await Post.find({ position: "MentalMid" });
+    const mentalMid = await Post.find({ position: "MentalHealthMid" });
     res.json(mentalMid);
   } catch (err) {
     res.status(500).json({ message: err.message });
