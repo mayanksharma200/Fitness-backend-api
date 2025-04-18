@@ -204,7 +204,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;  // ⚠️ Only for testing! Remove later.
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
@@ -231,7 +231,7 @@ router.post("/generate-content", async (req, res) => {
         {
           parts: [
             {
-              text: `As a health and wellness content writer, create a comprehensive, in-depth article with multiple sections based on these requirements:
+              text: `As a health and wellness content writer in Humanize behaviour, create a comprehensive, in-depth article with multiple sections based on these requirements: (NOT TO LOOK LIKE AI GENERATED CONTENT)
 
           ARTICLE TITLE: ${title}
           ${source ? `SOURCE: ${source}` : ""}
@@ -264,7 +264,7 @@ router.post("/generate-content", async (req, res) => {
             "body": [
               {
                 "headline": "Section 1 Headline",
-                "content": "Very detailed content for this section (approximately 1200 words)...",
+                "content": "Very detailed content for this section (approximately 1200 words in Humanize language)...",
                 "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
                 "subsections": [
                   {
