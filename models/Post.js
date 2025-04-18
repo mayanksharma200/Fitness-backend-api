@@ -30,6 +30,21 @@ const summaryItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// Schema for subsections
+const subsectionSchema = new mongoose.Schema(
+  {
+    subheading: {
+      type: String,
+      default: "",
+    },
+    content: {
+      type: String,
+      default: "",
+    },
+  },
+  { _id: false }
+);
+
 // Schema for body content items
 const bodyItemSchema = new mongoose.Schema(
   {
@@ -41,8 +56,16 @@ const bodyItemSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    keywords: {
+      type: [String],
+      default: [],
+    },
     hyperlinks: {
       type: [hyperlinkSchema],
+      default: [],
+    },
+    subsections: {
+      type: [subsectionSchema],
       default: [],
     },
   },
