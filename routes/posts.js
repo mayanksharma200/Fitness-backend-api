@@ -142,7 +142,7 @@ router.get("/viewall-top", async (req, res) => {
     const topPosts = await Post.find({
       position: {
         $in: [
-          "TopNutrition",
+          "NutritionTop",
           "SleepTop",
           "MentalTop",
           "FitnessTop",
