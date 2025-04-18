@@ -158,7 +158,7 @@ router.get("/viewall-top", async (req, res) => {
 //viewall Mid
 router.get("/viewall-mid", async (req, res) => {
   try {
-    const topPosts = await Post.find({
+    const midPosts = await Post.find({
       position: {
         $in: [
           "NutritionMid",
@@ -169,7 +169,7 @@ router.get("/viewall-mid", async (req, res) => {
         ],
       },
     });
-    res.json(topPosts);
+    res.json(midPosts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
