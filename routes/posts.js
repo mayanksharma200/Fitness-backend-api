@@ -155,6 +155,25 @@ router.get("/viewall-top", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+//viewall Mid
+router.get("/viewall-mid", async (req, res) => {
+  try {
+    const topPosts = await Post.find({
+      position: {
+        $in: [
+          "NutritionMid",
+          "SleepMid",
+          "MentalMid",
+          "FitnessMid",
+          "ProductMid",
+        ],
+      },
+    });
+    res.json(topPosts);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // Get all posts
 router.get("/", async (req, res) => {
