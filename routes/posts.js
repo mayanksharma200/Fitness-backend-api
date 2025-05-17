@@ -250,60 +250,109 @@ router.post("/generate-content", async (req, res) => {
         {
           parts: [
             {
-              text: `As a health and wellness content writer in Humanize behaviour, create a comprehensive, in-depth article with multiple sections based on these requirements: (NOT TO LOOK LIKE AI GENERATED CONTENT)
-
-          ARTICLE TITLE: ${title}
-          ${source ? `SOURCE: ${source}` : ""}
-          ${imageUrl ? `IMAGE CONTEXT: ${imageUrl}` : ""}
-          ${
-            position
-              ? `CATEGORY: ${position
-                  .replace(/Top|Mid/g, "")
-                  .replace(/([A-Z])/g, " $1")
-                  .trim()}`
-              : ""
-          }
-          
-          CONTENT REQUIREMENTS:
-          - Generate 3 concise summary bullet points
-          - Create ${sections} detailed body sections with headlines and comprehensive content
-          - Each section should be approximately 1200 words (very detailed and thorough)
-          - Include 5-7 relevant keywords per section for hyperlinks
-          - Maintain professional yet accessible tone
-          - Ensure logical flow between sections
-          - Include subsections with H3 headings where appropriate
-          - Provide statistics, expert quotes, and practical examples where relevant
-          
-          OUTPUT FORMAT (as valid JSON):
+              text: `As a health and wellness content writer specializing in human behavior, create a comprehensive, in-depth article with multiple sections based on these requirements. The article must NOT appear AI-generated and should read naturally with professional yet accessible tone.
+    
+    ARTICLE TITLE: ${title}
+    ${source ? `SOURCE: ${source}` : ""}
+    ${imageUrl ? `IMAGE CONTEXT: ${imageUrl}` : ""}
+    ${
+      position
+        ? `CATEGORY: ${position
+            .replace(/Top|Mid/g, "")
+            .replace(/([A-Z])/g, " $1")
+            .trim()}`
+        : ""
+    }
+    
+    CONTENT REQUIREMENTS:
+    - Generate 3 concise summary bullet points highlighting key insights
+    - Create ${sections} detailed body sections, each with a clear headline (H2)
+    - For each main section, include multiple relevant subsections with H3 subheadings
+    - Each subsection should contain thorough, well-researched content (~1200 words per main section total)
+    - Use 5-7 relevant keywords per section for hyperlinking to credible sources
+    - Maintain logical flow and smooth transitions between sections and subsections
+    - Incorporate statistics, expert quotes, and practical examples where appropriate
+    - Write in a natural, engaging style that reflects expert human authorship
+    
+    OUTPUT FORMAT (as valid JSON):
+    
+    {
+      "_id": "unique_article_id",
+      "title": "${title}",
+      "position": "${position || ""}",
+      "content": {
+        "summary": [
           {
-            "summary": [
-              {"title": "Key point", "text": "Brief summary text..."},
-              ...
-            ],
-            "body": [
+            "title": "Summary Point 1",
+            "text": "Concise key insight 1"
+          },
+          {
+            "title": "Summary Point 2",
+            "text": "Concise key insight 2"
+          },
+          {
+            "title": "Summary Point 3",
+            "text": "Concise key insight 3"
+          }
+        ],
+        "body": [
+          {
+            "headline": "Main Section Headline 1",
+            "keywords": ["keyword1", "keyword2", "..."],
+            "content": "Comprehensive content for main section 1",
+            "subsections": [
               {
-                "headline": "Section 1 Headline",
-                "content": "Very detailed content for this section (approximately 1200 words in Humanize language)...",
-                "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
-                "subsections": [
-                  {
-                    "subheading": "Subsection 1",
-                    "content": "Detailed content for this subsection..."
-                  },
-                  ...
-                ]
+                "subheadline": "Subheading 1.1",
+                "content": "Detailed content for subsection 1.1"
               },
-              ...
+              {
+                "subheadline": "Subheading 1.2",
+                "content": "Detailed content for subsection 1.2"
+              }
+              // Add more subsections as needed
             ]
-          }`,
+          },
+          {
+            "headline": "Main Section Headline 2",
+            "keywords": ["keyword1", "keyword2", "..."],
+            "content": "Comprehensive content for main section 2",
+            "subsections": [
+              {
+                "subheadline": "Subheading 2.1",
+                "content": "Detailed content for subsection 2.1"
+              }
+              // Add more subsections as needed
+            ]
+          }
+          // Repeat for all sections
+        ]
+      },
+      "meta": {
+        "author": "Author Name",
+        "date": "Publication Date",
+        "reviewer": "Reviewer Name",
+        "readTime": "Estimated read time"
+      },
+      "image": "${imageUrl || ""}",
+      "related_studies": [
+        {
+          "title": "Related Study 1",
+          "link": "URL or path"
+        },
+        {
+          "title": "Related Study 2",
+          "link": "URL or path"
+        }
+      ],
+      "link": "",
+      "id": "unique_article_id"
+    }
+    
+    Please ensure the article reads naturally, with rich detail and human-like nuance, avoiding any AI-generated style or tone.`,
             },
           ],
         },
       ],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 8000, // Increased to allow for longer content
-      },
     };
 
     const response = await axios.post(
