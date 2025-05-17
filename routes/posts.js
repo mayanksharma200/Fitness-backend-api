@@ -227,172 +227,177 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
-router.post("/generate-content", async (req, res) => {
-  try {
-    const { title, source, imageUrl, position, sections = 5 } = req.body;
-
-    if (!title) {
-      return res.status(400).json({
-        success: false,
-        error: "Title is required",
-      });
-    }
-
-    if (!GEMINI_API_KEY) {
-      return res.status(501).json({
-        success: false,
-        error: "AI service not configured",
-      });
-    }
-
-    const prompt = {
-      contents: [
-        {
-          parts: [
-            {
-              text: `As a health and wellness content writer specializing in human behavior, create a comprehensive, in-depth article with multiple sections based on these requirements. The article must NOT appear AI-generated and should read naturally with professional yet accessible tone.
-    
-    ARTICLE TITLE: ${title}
-    ${source ? `SOURCE: ${source}` : ""}
-    ${imageUrl ? `IMAGE CONTEXT: ${imageUrl}` : ""}
-    ${
-      position
-        ? `CATEGORY: ${position
-            .replace(/Top|Mid/g, "")
-            .replace(/([A-Z])/g, " $1")
-            .trim()}`
-        : ""
-    }
-    
-    CONTENT REQUIREMENTS:
-    - Generate 3 concise summary bullet points highlighting key insights
-    - Create ${sections} detailed body sections, each with a clear headline (H2)
-    - For each main section, include multiple relevant subsections with H3 subheadings
-    - Each subsection should contain thorough, well-researched content (~1200 words per main section total)
-    - Use 5-7 relevant keywords per section for hyperlinking to credible sources
-    - Maintain logical flow and smooth transitions between sections and subsections
-    - Incorporate statistics, expert quotes, and practical examples where appropriate
-    - Write in a natural, engaging style that reflects expert human authorship
-    
-    OUTPUT FORMAT (as valid JSON):
-    
-    {
-      "_id": "unique_article_id",
-      "title": "${title}",
-      "position": "${position || ""}",
-      "content": {
-        "summary": [
-          {
-            "title": "Summary Point 1",
-            "text": "Concise key insight 1"
-          },
-          {
-            "title": "Summary Point 2",
-            "text": "Concise key insight 2"
-          },
-          {
-            "title": "Summary Point 3",
-            "text": "Concise key insight 3"
-          }
-        ],
-        "body": [
-          {
-            "headline": "Main Section Headline 1",
-            "keywords": ["keyword1", "keyword2", "..."],
-            "content": "Comprehensive content for main section 1",
-            "subsections": [
-              {
-                "subheadline": "Subheading 1.1",
-                "content": "Detailed content for subsection 1.1"
-              },
-              {
-                "subheadline": "Subheading 1.2",
-                "content": "Detailed content for subsection 1.2"
-              }
-              // Add more subsections as needed
-            ]
-          },
-          {
-            "headline": "Main Section Headline 2",
-            "keywords": ["keyword1", "keyword2", "..."],
-            "content": "Comprehensive content for main section 2",
-            "subsections": [
-              {
-                "subheadline": "Subheading 2.1",
-                "content": "Detailed content for subsection 2.1"
-              }
-              // Add more subsections as needed
-            ]
-          }
-          // Repeat for all sections
-        ]
-      },
-      "meta": {
-        "author": "Author Name",
-        "date": "Publication Date",
-        "reviewer": "Reviewer Name",
-        "readTime": "Estimated read time"
-      },
-      "image": "${imageUrl || ""}",
-      "related_studies": [
-        {
-          "title": "Related Study 1",
-          "link": "URL or path"
-        },
-        {
-          "title": "Related Study 2",
-          "link": "URL or path"
-        }
-      ],
-      "link": "",
-      "id": "unique_article_id"
-    }
-    
-    Please ensure the article reads naturally, with rich detail and human-like nuance, avoiding any AI-generated style or tone.`,
-            },
-          ],
-        },
-      ],
-    };
-
-    const response = await axios.post(
-      `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
-      prompt,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const generatedText = response.data.candidates[0].content.parts[0].text;
-
+  router.post("/generate-content", async (req, res) => {
     try {
-      // Clean the response to ensure valid JSON
+      const { title, source, imageUrl, position, sections = 5 } = req.body;
+
+      if (!title) {
+        return res.status(400).json({
+          success: false,
+          error: "Title is required",
+        });
+      }
+
+      if (!GEMINI_API_KEY) {
+        return res.status(501).json({
+          success: false,
+          error: "AI service not configured",
+        });
+      }
+
+      // Enhanced prompt for human-like, SEO-optimized content
+      const prompt = {
+        contents: [
+          {
+            parts: [
+              {
+                text: `You are a professional health and wellness content writer specializing in human behavior. Write a comprehensive, SEO-optimized, natural-sounding article with rich detail and practical examples. Avoid any AI-generated style or tone.
+  
+  ARTICLE TITLE: ${title}
+  ${source ? `SOURCE: ${source}` : ""}
+  ${imageUrl ? `IMAGE CONTEXT: ${imageUrl}` : ""}
+  ${
+    position
+      ? `CATEGORY: ${position
+          .replace(/Top|Mid/g, "")
+          .replace(/([A-Z])/g, " $1")
+          .trim()}`
+      : ""
+  }
+  
+  CONTENT REQUIREMENTS:
+  - Generate 3 concise summary bullet points with clear titles and brief explanations.
+  - Create ${sections} detailed body sections, each with a headline, 5-7 relevant keywords for hyperlinks, and thorough content (~1200 words per section).
+  - Include subsections with subheadings (H3) and detailed content where appropriate.
+  - Use a professional yet accessible tone.
+  - Ensure logical flow and SEO best practices (keyword usage, readability).
+  - Include statistics, expert quotes, and practical examples.
+  - Provide meta information: author, date, reviewer, estimated read time.
+  - Include related studies with titles and links.
+  
+  OUTPUT FORMAT (valid JSON ONLY, no extra text):
+  {
+    "title": "${title}",
+    "position": "${position || ""}",
+    "content": {
+      "summary": [
+        {"title": "Key point", "text": "Brief summary text..."},
+        ...
+      ],
+      "body": [
+        {
+          "headline": "Main Section Headline 1",
+          "keywords": ["keyword1", "keyword2", "..."],
+          "content": "Comprehensive content for main section 1",
+          "subsections": [
+            {
+              "subheading": "Subheading 1.1",
+              "content": "Detailed content for subsection 1.1"
+            }
+            // More subsections as needed
+          ]
+        }
+        // Repeat for all sections
+      ]
+    },
+    "meta": {
+      "author": "Author Name",
+      "date": "Publication Date",
+      "reviewer": "Reviewer Name",
+      "readTime": "Estimated read time"
+    },
+    "image": "${imageUrl || ""}",
+    "related_studies": [
+      {
+        "title": "Related Study 1",
+        "link": "URL or path"
+      }
+      // More related studies
+    ],
+    "link": ""
+  }
+  
+  Please ensure the JSON is clean, valid, and contains no extra fields like _id or id.`,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 8000,
+        },
+      };
+
+      const response = await axios.post(
+        `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+        prompt,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const generatedText = response.data.candidates[0].content.parts[0].text;
+
+      // Extract JSON from response text robustly
       const jsonStart = generatedText.indexOf("{");
       const jsonEnd = generatedText.lastIndexOf("}") + 1;
       const jsonString = generatedText.slice(jsonStart, jsonEnd);
 
-      const generatedContent = JSON.parse(jsonString);
+      let generatedContent = null;
+      try {
+        generatedContent = JSON.parse(jsonString);
 
-      res.json({
-        success: true,
-        content: generatedContent,
-      });
-    } catch (e) {
-      console.error("Failed to parse JSON:", e);
-      res.json({
-        success: true,
-        rawContent: generatedText,
+        // Remove unwanted _id or id fields if present
+        if (generatedContent._id) delete generatedContent._id;
+        if (generatedContent.id) delete generatedContent.id;
+
+        // Also remove _id or id from nested objects if any (optional)
+        if (generatedContent.content?.summary) {
+          generatedContent.content.summary.forEach((item) => {
+            if (item._id) delete item._id;
+            if (item.id) delete item.id;
+          });
+        }
+        if (generatedContent.content?.body) {
+          generatedContent.content.body.forEach((section) => {
+            if (section._id) delete section._id;
+            if (section.id) delete section.id;
+            if (section.subsections) {
+              section.subsections.forEach((sub) => {
+                if (sub._id) delete sub._id;
+                if (sub.id) delete sub.id;
+              });
+            }
+          });
+        }
+        if (generatedContent.related_studies) {
+          generatedContent.related_studies.forEach((study) => {
+            if (study._id) delete study._id;
+            if (study.id) delete study.id;
+          });
+        }
+
+        res.json({
+          success: true,
+          content: generatedContent,
+        });
+      } catch (e) {
+        console.error("Failed to parse JSON:", e);
+        // Return raw content if JSON parsing fails
+        res.json({
+          success: true,
+          rawContent: generatedText,
+        });
+      }
+    } catch (error) {
+      console.error("Content generation error:", error);
+      res.status(500).json({
+        success: false,
+        error: error.message,
       });
     }
-  } catch (error) {
-    console.error("Content generation error:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
+  });
 // module.exports = router;
 export default router;
