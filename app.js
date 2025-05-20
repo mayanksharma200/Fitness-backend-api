@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./utils/db.js";
 import postsRouter from "./routes/posts.js";
+import videoRoutes from "./routes/videoRoutes.js"; // <-- Add this import
 import axios from "axios";
 
 const app = express();
@@ -16,7 +17,7 @@ const staticAllowedOrigins = [
   "https://fitnessclub121.vercel.app",
   "https://fitness-backend-api.vercel.app",
   "https://www.fitnesss.club",
-  "https://fitnesss.club", // Add without www as well
+  "https://fitnesss.club",
 ];
 
 const envAllowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
@@ -52,6 +53,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/posts", postsRouter);
+app.use("/api/videos", videoRoutes); // <-- Mount video routes here
 
 // Error Handling
 app.use((req, res) => {
