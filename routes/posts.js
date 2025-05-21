@@ -4,6 +4,27 @@ import axios from "axios";
 
 const router = express.Router();
 
+const IMG_ACCESS_KEY = process.env.IMG_ACCESS_KEY; // Unsplash API key
+// Proxy Unsplash search endpoint for image generation
+router.get("/fluximg", async (req, res) => {
+  const { query, per_page = 12, page = 1 } = req.query;
+  if (!query) return res.status(400).json({ error: "Query is required" });
+
+  try {
+    const response = await axios.get("https://api.unsplash.com/search/photos", {
+      params: { query, per_page, page },
+      headers: {
+        Authorization: `Client-ID ${IMG_ACCESS_KEY}`,
+        "Accept-Version": "v1",
+      },
+    });
+    res.json(response.data);
+  } catch (err) {
+    console.error("Unsplash API error:", err);
+    res.status(500).json({ error: "Failed to fetch images" });
+  }
+});
+
 // Create a new post
 router.post("/", async (req, res) => {
   try {
@@ -399,5 +420,7 @@ const GEMINI_API_URL =
       });
     }
   });
+
+
 // module.exports = router;
 export default router;
